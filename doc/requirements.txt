@@ -1,4 +1,5 @@
-sphinx
+sphinx>=2.0.0
 sphinxcontrib-bibtex
 sphinxcontrib-programoutput
+guzzle_sphinx_theme
 numpy
