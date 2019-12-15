@@ -1,4 +1,4 @@
-sphinx>=2.0.0
+sphinx==2.2.2
 sphinxcontrib-bibtex
 sphinxcontrib-programoutput
 guzzle_sphinx_theme
