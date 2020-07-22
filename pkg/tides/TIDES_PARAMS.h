@@ -17,6 +17,8 @@
       _RL aSU, aMO
       _RL tides_ecc
       _RL tides_obl
+      _RL tides_eccMag
+      _RL tides_oblMag
       REAL*8 lonSU, latSU
       REAL*8 lonMO, latMO
       COMMON /TIDES_PARAMS_R/
@@ -24,6 +26,7 @@
      &  tides_sunGM, tides_moonGM,
      &  tides_permC0, tides_permC1, tides_permC,
      &  aSU, aMO, lonSU, latSU, lonMO, latMO,
-     &  tides_ecc, tides_obl
+     &  tides_ecc, tides_obl,
+     &  tides_eccMag, tides_oblMag
 
 #endif /* ALLOW_TIDES */
