@@ -30,14 +30,16 @@ C     === Local variables ===
       _BEGIN_MASTER(myThid)
 
 C     initialize SPICE library
-      CALL FURNSH( tides_metaKernel )
+C      CALL FURNSH( tides_metaKernel )
 
 C     get grav.constant times mass and convert to m^3/s^2
-      CALL BODVRD('SUN', 'GM', 1, dm, GM)
+C      CALL BODVRD('SUN', 'GM', 1, dm, GM)
       tides_sunGM = GM*1 _d 9
+      tides_sunGM = 1 _d 0
 
-      CALL BODVRD('MOON', 'GM', 1, dm, GM)
+C      CALL BODVRD('MOON', 'GM', 1, dm, GM)
       tides_moonGM = GM*1 _d 9
+      tides_moonGM = 1 _d 0
 
       _END_MASTER(myThid)
       _BARRIER
