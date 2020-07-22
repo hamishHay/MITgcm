@@ -133,7 +133,9 @@ C     Add Tidal momentum forcing from 2-d geopotential anomaly
           gU_arr(i,j) = gU_arr(i,j)
      &      - recip_dxC(i,j,bi,bj)*recip_deepFacC(k)
      &      * ( phiTide2d(i,j,bi,bj) - phiTide2d(i-1,j,bi,bj) )
-     &      *_maskW(i,j,k,bi,bj)
+     &      *_maskW(i,j,k,bi,bj)*recip_deepFac2C(k)
+C     Last factor accounts for reduction in tidal potential
+C     with increasing depth (r/R)^2
         ENDDO
        ENDDO
       ENDIF
