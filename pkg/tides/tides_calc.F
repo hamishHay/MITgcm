@@ -55,7 +55,6 @@ C bi,bj     :: Tile indices
       REAL*8 lon, lat
       REAL*8 sinLat, cosLat, cosM, sinM, cos2Lon, sin2Lon, sin2Lat
       REAL*8 cosLon
-      REAL*8 eccMag, oblMag
       _RL muSU, muMO, rSU, rMO, xi, VSU, VMO, Vperm, cent
 
       _BEGIN_MASTER(myThid)
@@ -118,13 +117,10 @@ C      ENDDO
 
 C     Calculate tidal potential (to first order) in 
 C     eccentricity and obliquity.
-      cosM = 0 _d 0
-      sinM = 0 _d 0
-   
-      eccMag = 0 _d 75 * tides_earthRadius*tides_earthRadius
-     &         *omega*omega*tides_ecc
-      oblMag = -1 _d 5 * tides_earthRadius*tides_earthRadius
-     &          *omega*omega*tides_obl*deg2rad
+
+C     cosine and sin of the body's Mean Anomaly, M
+      cosM = COS( omega*myTime )
+      sinM = SIN( omega*myTime )
 
       _END_MASTER(myThid)
       _BARRIER
@@ -149,9 +145,9 @@ C               eccentricity forcing
      &               *( ( (1 _d 0 - 3 _d 0 * sinLat*sinLat)*cosM
      &                    + cosLat*cosLat * (3 _d 0 *cosM*cos2Lon 
      &                                     + 4 _d 0 *sinM*sin2Lon)
-     &                   )*eccMag
+     &                   )*tides_eccMag
 C               obliquity forcing
-     &                 + (cosM * sin2Lat * cosLon)*oblMag )
+     &                 + (cosM * sin2Lat * cosLon)*tides_oblMag )
       
          ENDDO
         ENDDO
