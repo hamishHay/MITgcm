@@ -12,8 +12,11 @@ C     Initialize TIDES variables that are kept fixed during the run.
 
 C     !USES:
       IMPLICIT NONE
+#include "SIZE.h"
 #include "EEPARAMS.h"
+#include "PARAMS.h"
 #include "TIDES_PARAMS.h"
+
 
 C     !INPUT/OUTPUT PARAMETERS:
 C     myThid ::  my Thread Id number
@@ -40,6 +43,11 @@ C      CALL BODVRD('SUN', 'GM', 1, dm, GM)
 C      CALL BODVRD('MOON', 'GM', 1, dm, GM)
       tides_moonGM = GM*1 _d 9
       tides_moonGM = 1 _d 0
+
+      tides_eccMag = 0 _d 75 * rSphere * rSphere
+     &               *omega*omega*tides_ecc
+      tides_oblMag = -1 _d 5 * rSphere * rSphere
+     &               *omega*omega*tides_obl*deg2rad
 
       _END_MASTER(myThid)
       _BARRIER
