@@ -44,10 +44,13 @@ C      CALL BODVRD('MOON', 'GM', 1, dm, GM)
       tides_moonGM = GM*1 _d 9
       tides_moonGM = 1 _d 0
 
-      tides_eccMag = 0 _d 75 * rSphere * rSphere
+      tides_eccMag = 0.75 _d 0 * rSphere * rSphere
      &               *omega*omega*tides_ecc
-      tides_oblMag = -1 _d 5 * rSphere * rSphere
+      tides_oblMag = -1.5 _d 0 * rSphere * rSphere
      &               *omega*omega*tides_obl*deg2rad
+
+      WRITE(*,*) "TIDAL PARAMS", tides_metaKernel
+      WRITE(*,*) "TIDAL PARAMS", rSphere, omega, tides_ecc, tides_obl
 
       _END_MASTER(myThid)
       _BARRIER

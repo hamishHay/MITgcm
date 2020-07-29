@@ -125,7 +125,7 @@ C     cosine and sin of the body's Mean Anomaly, M
       _END_MASTER(myThid)
       _BARRIER
 
-
+      
       DO bj=myByLo(myThid),myByHi(myThid)
        DO bi=myBxLo(myThid),myBxHi(myThid)
         DO j=0,sNy+1
@@ -140,7 +140,7 @@ C     cosine and sin of the body's Mean Anomaly, M
           sin2Lon = SIN(2 _d 0 * lon)
           sin2Lat = SIN(2 _d 0 * lat)
 
-          phiTide2d(i,j,bi,bj) = (1 _d 0 + tides_k2 - tides_h2)
+          phiTide2d(i,j,bi,bj) = -(1 _d 0 + tides_k2 - tides_h2)
 C               eccentricity forcing
      &               *( ( (1 _d 0 - 3 _d 0 * sinLat*sinLat)*cosM
      &                    + cosLat*cosLat * (3 _d 0 *cosM*cos2Lon 
@@ -148,7 +148,7 @@ C               eccentricity forcing
      &                   )*tides_eccMag
 C               obliquity forcing
      &                 + (cosM * sin2Lat * cosLon)*tides_oblMag )
-      
+C          WRITE(*,*) cosM, sinM, tides_eccMag, tides_ecc      
          ENDDO
         ENDDO
        ENDDO

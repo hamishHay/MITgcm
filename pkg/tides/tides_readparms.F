@@ -55,14 +55,14 @@ C     What is the difference between rSphere and
 C     6371 _d 3? m vs km, maybe?
       tides_earthRadius = rSphere
 C      tides_earthRadius = 6371 _d 3
-      tides_h2 = 0.61 _d 0
-      tides_k2 = 0.3 _d 0
+      tides_h2 = 0.0 _d 0
+      tides_k2 = 0.0 _d 0
 C     permanent tide coefficients from HW95
       tides_permC0 = 0.8695487585 _d 0
       tides_permC1 = 0.0002826064 _d 0
       
 C     Orbital/rotation parameters
-      tides_ecc = 0 _d 0
+      tides_ecc = 0.01 _d 0
       tides_obl = 0 _d 0
       
 
