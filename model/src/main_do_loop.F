@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/model/src/main_do_loop.F,v 1.22 2017/03/29 15:44:00 mmazloff Exp $
-C $Name:  $
-
 #include "PACKAGES_CONFIG.h"
 #include "CPP_OPTIONS.h"
 #ifdef ALLOW_OPENAD
@@ -9,26 +6,32 @@ C $Name:  $
 c#ifdef ALLOW_AUTODIFF
 c# include "AUTODIFF_OPTIONS.h"
 c#endif
+#ifdef ALLOW_GENERIC_ADVDIFF
+# include "GAD_OPTIONS.h"
+#endif
+#ifdef ALLOW_GGL90
+# include "GGL90_OPTIONS.h"
+#endif
+#ifdef ALLOW_GMREDI
+# include "GMREDI_OPTIONS.h"
+#endif
 #ifdef ALLOW_OBCS
 # include "OBCS_OPTIONS.h"
 #endif
 #ifdef ALLOW_SEAICE
 # include "SEAICE_OPTIONS.h"
 #endif
-#ifdef ALLOW_GENERIC_ADVDIFF
-# include "GAD_OPTIONS.h"
+#ifdef ALLOW_GCHEM
+# include "GCHEM_OPTIONS.h"
 #endif
-#ifdef ALLOW_GMREDI
-# include "GMREDI_OPTIONS.h"
-#endif
-#ifdef ALLOW_STREAMICE
-# include "STREAMICE_OPTIONS.h"
-#endif
-#ifdef ALLOW_GGL90
-# include "GGL90_OPTIONS.h"
+#ifdef ALLOW_DIC
+# include "DIC_OPTIONS.h"
 #endif
 #ifdef ALLOW_EXF
 # include "EXF_OPTIONS.h"
+#endif
+#ifdef ALLOW_STREAMICE
+# include "STREAMICE_OPTIONS.h"
 #endif
 #ifdef ALLOW_COST
 # include "COST_OPTIONS.h"
@@ -90,6 +93,7 @@ c**************************************
 #  include "PTRACERS_START.h"
 # endif
 # ifdef ALLOW_GCHEM
+#  include "GCHEM_SIZE.h"
 #  include "GCHEM_FIELDS.h"
 # endif
 # ifdef ALLOW_CFC
@@ -101,10 +105,6 @@ c**************************************
 #  include "DIC_ATMOS.h"
 #  include "DIC_CTRL.h"
 #  include "DIC_COST.h"
-# endif
-# ifdef ALLOW_BLING
-#  include "BLING_VARS.h"
-#  include "BLING_LOAD.h"
 # endif
 # ifdef ALLOW_OBCS
 #  include "OBCS_PARAMS.h"

@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/autodiff/autodiff_ini_model_io.F,v 1.32 2017/02/18 16:12:36 gforget Exp $
-C $Name:  $
-
 C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
 
 #include "AUTODIFF_OPTIONS.h"
@@ -59,6 +56,7 @@ c     initialize ad dump record number (used only if dumpAdByRec is true)
       dumpAdRecMn=0
       dumpAdRecDy=0
       dumpAdRecSi=0
+      dumpAdRecEt=0
 
       _BEGIN_MASTER( myThid )
 

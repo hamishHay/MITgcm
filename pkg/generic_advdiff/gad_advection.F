@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/generic_advdiff/gad_advection.F,v 1.77 2016/03/13 01:44:02 jmc Exp $
-C $Name:  $
-
 #include "GAD_OPTIONS.h"
 #ifdef ALLOW_AUTODIFF
 # include "AUTODIFF_OPTIONS.h"
@@ -27,11 +24,11 @@ C
 C The algorithm is as follows:
 C \begin{itemize}
 C \item{$\theta^{(n+1/3)} = \theta^{(n)}
-C      - \Delta t \partial_x (u\theta^{(n)}) + \theta^{(n)} \partial_x u$}
+C      - \Delta t (\partial_x (u\theta^{(n)}) - \theta^{(n)} \partial_x u$)}
 C \item{$\theta^{(n+2/3)} = \theta^{(n+1/3)}
-C      - \Delta t \partial_y (v\theta^{(n+1/3)}) + \theta^{(n)} \partial_y v$}
+C      - \Delta t (\partial_y (v\theta^{(n+1/3)}) - \theta^{(n)} \partial_y v$)}
 C \item{$\theta^{(n+3/3)} = \theta^{(n+2/3)}
-C      - \Delta t \partial_r (w\theta^{(n+2/3)}) + \theta^{(n)} \partial_r w$}
+C      - \Delta t (\partial_r (w\theta^{(n+2/3)}) - \theta^{(n)} \partial_r w$)}
 C \item{$G_\theta = ( \theta^{(n+3/3)} - \theta^{(n)} )/\Delta t$}
 C \end{itemize}
 C

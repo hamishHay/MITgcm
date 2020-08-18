@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/exf/exf_check.F,v 1.35 2017/10/06 00:03:56 jmc Exp $
-C $Name:  $
-
 #include "EXF_OPTIONS.h"
 
 C--  File exf_check.F: Routines to check EXF settings
@@ -32,6 +29,8 @@ C     == Global variables ===
 
 #include "EXF_PARAM.h"
 #include "EXF_CONSTANTS.h"
+#include "EXF_INTERP_SIZE.h"
+#include "EXF_INTERP_PARAM.h"
 
 C     !INPUT/OUTPUT PARAMETERS:
 C     myThid   :: my Thread Id number
@@ -687,7 +686,6 @@ C     !USES:
 C     == Global variables ===
 #include "EEPARAMS.h"
 #include "EXF_INTERP_SIZE.h"
-#include "EXF_PARAM.h"
 
 C     !INPUT/OUTPUT PARAMETERS:
 C     fldName          :: field short name (to print mesg)

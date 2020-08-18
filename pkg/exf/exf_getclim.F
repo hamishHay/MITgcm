@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/exf/exf_getclim.F,v 1.28 2017/03/03 00:57:00 jmc Exp $
-C $Name:  $
-
 #include "EXF_OPTIONS.h"
 #ifdef ALLOW_CTRL
 # include "CTRL_OPTIONS.h"
@@ -46,6 +43,8 @@ c     == global variables ==
 #endif
 #include "EXF_PARAM.h"
 #include "EXF_CONSTANTS.h"
+#include "EXF_INTERP_SIZE.h"
+#include "EXF_INTERP_PARAM.h"
 #include "EXF_FIELDS.h"
 #if (defined (ALLOW_CTRL) && defined (ECCO_CTRL_DEPRECATED))
 # include "CTRL_SIZE.h"
@@ -85,7 +84,7 @@ c     Get values of climatological sst fields.
      I     myTime, myIter, myThid )
 
       DO bj = myByLo(myThid),myByHi(myThid)
-       DO bi = myBxLo(myThid),mybxhi(myThid)
+       DO bi = myBxLo(myThid),myBxHi(myThid)
         DO j = 1,sNy
          DO i = 1,sNx
             IF (climsst(i,j,bi,bj) .LT. climtempfreeze) THEN

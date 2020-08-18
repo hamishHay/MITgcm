@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/model/src/ini_pressure.F,v 1.16 2016/02/15 18:00:26 jmc Exp $
-C $Name:  $
-
 #include "PACKAGES_CONFIG.h"
 #include "CPP_OPTIONS.h"
 
@@ -113,7 +110,6 @@ C     for each level save old pressure and compute new pressure
             ENDDO
             CALL CALC_PHI_HYD(
      I           bi, bj, iMin, iMax, jMin, jMax, k,
-     I           theta, salt,
      U           phiHydF,
      O           phiHydC, dPhiHydX, dPhiHydY,
      I           startTime, -1, myThid )

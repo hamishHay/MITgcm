@@ -1,0 +1,33 @@
+# RBCS package parameters:
+ &RBCS_PARM01
+    useRBCtemp=.TRUE.,
+#   useRBCsalt=.TRUE.,
+    tauRelaxT=43200.,
+#   tauRelaxS=864000.,
+#   relaxMaskFile='rbcs_mask_T.bin','rbcs_mask_S.bin',
+#   relaxMaskFile(1)='rbcs_mask.bin',
+#   relaxTFile='rbcs_T_530mK.bin',
+    relaxMaskFile(1)='rbcs_bottom.bin',
+    relaxTFile='rbcs_T+250mK.bin',
+#   relaxSFile='rbcs_Tr1_fld.bin',
+#--- Momentum: surface damping
+    useRBCuVel=.FALSE.,
+    useRBCvVel=.FALSE.,
+    tauRelaxU = 80000.,
+    tauRelaxV = 80000.,
+    relaxMaskUFile='rbcs_surf.bin',
+    relaxMaskVFile='rbcs_surf.bin',
+#- note: just need to have zero in 1rst level 
+    relaxUFile ='rbcs_bottom.bin',
+    relaxVFile ='rbcs_bottom.bin',
+#   rbcsForcingOffset=43200,
+#   rbcsForcingPeriod=2592000.,
+#   rbcsForcingCycle=31104000.,
+ &
+
+# RBCS for pTracers (read this namelist only when ptracers pkg is compiled)
+#&RBCS_PARM02
+# useRBCptrnum(1)    = .TRUE.,
+# tauRelaxPTR(1)     = 21600.,
+# relaxPtracerFile(1)='rbcs_Tr1_fld.bin',
+#&

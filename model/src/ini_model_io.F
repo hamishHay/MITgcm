@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/model/src/ini_model_io.F,v 1.51 2017/04/04 23:21:46 jmc Exp $
-C $Name:  $
-
 #include "PACKAGES_CONFIG.h"
 #include "CPP_OPTIONS.h"
 
@@ -147,8 +144,9 @@ C     after adding file-name: set a limit to half MAX_LEN_FNAM
      &       'localDir: >',mdsioLocalDir(1:IL),'<'
           STOP 'ABNORMAL END: S/R INI_MODEL_IO (mdsioLocalDir)'
         ENDIF
+        i = ILNBLNK( myProcessStr )
         WRITE(namBuf,'(4A)')
-     &         ' mkdir -p ', mdsioLocalDir(1:iL),myProcessStr(1:4),' '
+     &         ' mkdir -p ', mdsioLocalDir(1:iL),myProcessStr(1:i),' '
         pIL = 1 + ILNBLNK( namBuf )
 #ifdef HAVE_SYSTEM
         WRITE(standardMessageUnit,'(3A)')
@@ -168,7 +166,7 @@ C     after adding file-name: set a limit to half MAX_LEN_FNAM
         CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
      &                      SQUEEZE_RIGHT, myThid )
         namBuf(1:iL) = mdsioLocalDir(1:iL)
-        WRITE(mdsioLocalDir,'(3A)') namBuf(1:iL),myProcessStr(1:4),'/'
+        WRITE(mdsioLocalDir,'(3A)') namBuf(1:iL),myProcessStr(1:i),'/'
       ENDIF
 
 C-    Initialise MFLDS variables in common block

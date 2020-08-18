@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/gmredi/gmredi_diagnostics_init.F,v 1.22 2015/09/24 21:31:35 dfer Exp $
-C $Name:  $
-
 #include "GMREDI_OPTIONS.h"
 
 CBOP
@@ -555,6 +552,15 @@ c     IF ( useDiagnotics ) THEN
         CALL DIAGNOSTICS_ADDTOLIST( diagNum,
      I    diagName, diagCode, diagUnits, diagTitle, diagMate, myThid )
 #endif
+#endif
+
+#ifdef ALLOW_GM_LEITH_QG
+        diagName  = 'GM_LTHQG'
+        diagTitle = 'QGLeith viscosity used as kappa_GM in GMRedi'
+        diagUnits = 'm^2/s           '
+        diagCode  = 'SM      MR      '
+        CALL DIAGNOSTICS_ADDTOLIST( diagNum,
+     I    diagName, diagCode, diagUnits, diagTitle, 0, myThid )
 #endif
 
 c     ENDIF

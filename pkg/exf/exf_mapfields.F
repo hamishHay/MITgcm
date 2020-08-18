@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/exf/exf_mapfields.F,v 1.33 2017/10/06 00:03:56 jmc Exp $
-C $Name:  $
-
 #include "EXF_OPTIONS.h"
 #ifdef ALLOW_AUTODIFF
 # include "AUTODIFF_OPTIONS.h"
@@ -321,9 +318,11 @@ C             Short wave radiative flux.
 #endif
 
 #ifdef ATMOSPHERIC_LOADING
+C-    subtract "surf_pRef" to fill in atmos. pressure anomaly "pLoad"
           DO j = jmin,jmax
             DO i = imin,imax
-             pLoad(i,j,bi,bj)=exf_outscal_apressure*apressure(i,j,bi,bj)
+             pLoad(i,j,bi,bj) =
+     &          exf_outscal_apressure*apressure(i,j,bi,bj) - surf_pRef
             ENDDO
           ENDDO
 #endif

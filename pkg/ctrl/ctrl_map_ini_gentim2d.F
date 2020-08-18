@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/ctrl/ctrl_map_ini_gentim2d.F,v 1.16 2017/09/18 15:16:52 gforget Exp $
-C $Name:  $
-
 #include "CTRL_OPTIONS.h"
 #ifdef ALLOW_AUTODIFF
 # include "AUTODIFF_OPTIONS.h"
@@ -318,15 +315,16 @@ CADJ STORE xx_gentim2d_dummy = ctrltape, key = 1 , kind = isbyte
          ENDIF
 #endif /* ALLOW_SMOOTH */
 
-         IF (doscaling) then
          DO bj=myByLo(myThid), myByHi(myThid)
           DO bi=myBxLo(myThid), myBxHi(myThid)
            DO j = 1,sNy
             DO i = 1,sNx
              if ((maskC(i,j,1,bi,bj).NE.0.).AND.
      &           (wgentim2d(i,j,bi,bj,iarr).GT.0.)) then
+               IF (doscaling) then
                 xx_gen(i,j,bi,bj)=xx_gen(i,j,bi,bj)
      &                  /sqrt(wgentim2d(i,j,bi,bj,iarr))
+               ENDIF ! IF (doscaling) then
              else
                 xx_gen(i,j,bi,bj)=0. _d 0
              endif
@@ -334,7 +332,6 @@ CADJ STORE xx_gentim2d_dummy = ctrltape, key = 1 , kind = isbyte
            ENDDO
           ENDDO
          ENDDO
-         ENDIF ! IF (doscaling) then
 #endif /* ALLOW_OPENAD */
 
          CALL CTRL_BOUND_2D(xx_gen,maskC,

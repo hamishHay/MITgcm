@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/model/src/set_defaults.F,v 1.183 2017/10/04 20:34:23 jmc Exp $
-C $Name:  $
-
 #include "PACKAGES_CONFIG.h"
 #include "CPP_OPTIONS.h"
 
@@ -104,6 +101,7 @@ C--   Set default "physical" parameters
       nh_Am2              = 1. _d 0
       gravity             = 9.81 _d 0
       gBaro               = UNSET_RL
+      surf_pRef           = 101325. _d 0
       rhoNil              = 999.8 _d 0
       rhoConst            = UNSET_RL
 C-- jmc : the default is to set rhoConstFresh to rhoConst (=rhoNil by default)
@@ -127,6 +125,7 @@ C-    viscosity and diffusivity default value:
       viscAhReMax         = 0. _d 0
       viscC2leith         = 0. _d 0
       viscC2leithD        = 0. _d 0
+      viscC2LeithQG       = 0. _d 0
       viscC2smag          = 0. _d 0
       viscArDefault       = 0. _d -3
       viscFacAdj          = 1. _d 0
@@ -193,9 +192,11 @@ C-    viscosity and diffusivity default value:
       tempStepping        = .TRUE.
       tempAdvection       = .TRUE.
       tempForcing         = .TRUE.
+      temp_stayPositive   = .FALSE.
       saltStepping        = .TRUE.
       saltAdvection       = .TRUE.
       saltForcing         = .TRUE.
+      salt_stayPositive   = .FALSE.
       addFrictionHeating  = .FALSE.
       metricTerms         = .TRUE.
       useNHMTerms         = .FALSE.
@@ -225,10 +226,9 @@ C-    viscosity and diffusivity default value:
       multiDimAdvection   = .TRUE.
       useMultiDimAdvec    = .FALSE.
       useCDscheme         = .FALSE.
-      useEnergyConservingCoriolis = .FALSE.
-      useJamartWetPoints  = .FALSE.
-      useJamartMomAdv     = .FALSE.
+      selectCoriScheme    = UNSET_I
       selectVortScheme    = UNSET_I
+      useJamartMomAdv     = .FALSE.
       upwindVorticity     = .FALSE.
       highOrderVorticity  = .FALSE.
       useAbsVorticity     = .FALSE.

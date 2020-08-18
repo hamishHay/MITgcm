@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/streamice/streamice_advect_thickness.F,v 1.13 2016/12/01 12:34:03 dgoldberg Exp $
-C $Name:  $
-
 #include "STREAMICE_OPTIONS.h"
 #ifdef ALLOW_AUTODIFF
 # include "AUTODIFF_OPTIONS.h"
@@ -171,6 +168,8 @@ CADJ STORE streamice_hmask  = comlev1, key=ikey_dynamics
       _EXCH_XY_RL(BCVALY,myThid)
       _EXCH_XY_RL(h_after_uflux_SI,myThid)
       _EXCH_XY_RL(h_after_vflux_SI,myThid)
+      _EXCH_XY_RL(hflux_x_SI,myThid)
+      _EXCH_XY_RL(hflux_y_SI,myThid)
 
 #ifndef ALLOW_AUTODIFF
 

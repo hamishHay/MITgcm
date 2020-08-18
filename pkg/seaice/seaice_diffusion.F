@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/seaice/seaice_diffusion.F,v 1.10 2014/10/20 03:20:57 gforget Exp $
-C $Name:  $
-
 #include "SEAICE_OPTIONS.h"
 #ifdef ALLOW_AUTODIFF
 # include "AUTODIFF_OPTIONS.h"
@@ -55,6 +52,7 @@ C     myThid     :: my Thread Id number
       _RL     myTime
       INTEGER myIter
       INTEGER myThid
+#ifdef ALLOW_GENERIC_ADVDIFF
 #ifdef ALLOW_DIAGNOSTICS
       CHARACTER*8 diagName
       CHARACTER*4 SEAICE_DIAG_SUFX, diagSufx
@@ -109,6 +107,7 @@ C     excluding advective terms:
 #endif
 C     endif do horizontal diffusion
       ENDIF
+#endif /* ALLOW_GENERIC_ADVDIFF */
 
       RETURN
       END

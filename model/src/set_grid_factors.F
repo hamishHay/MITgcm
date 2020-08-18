@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/model/src/set_grid_factors.F,v 1.2 2009/12/08 21:50:35 jmc Exp $
-C $Name:  $
-
 #include "CPP_OPTIONS.h"
 
 CBOP
@@ -66,6 +63,7 @@ C-    set deep-model grid factor:
         DO k=1,Nr
           deepFacC(k)  = (rSphere+rC(k))*recip_rSphere
           deepFac2C(k) = deepFacC(k)*deepFacC(k)
+          WRITE(*,*) k, rSphere+rC(k), deepFac2C(k)
         ENDDO
         DO k=1,Nr+1
           deepFacF(k)  = (rSphere+rF(k))*recip_rSphere

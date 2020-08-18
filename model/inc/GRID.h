@@ -1,5 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/model/inc/GRID.h,v 1.43 2013/07/26 14:20:01 jmc Exp $
-C $Name:  $
 C
 CBOP
 C    !ROUTINE: GRID.h
@@ -513,8 +511,8 @@ C     kSurfC  :: vertical index of the surface tracer cell
 C     kSurfW  :: vertical index of the surface U point
 C     kSurfS  :: vertical index of the surface V point
 C     kLowC   :: index of the r-lowest "wet cell" (2D)
-C IMPORTANT: kSurfC,W,S = Nr+1 and kLowC = 0 where the fluid column
-C            is empty (continent)
+C IMPORTANT: kLowC = 0 and kSurfC,W,S = Nr+1 (or =Nr+2 on a thin-wall)
+C            where the fluid column is empty (continent)
       COMMON /GRID_I/
      &  kSurfC, kSurfW, kSurfS,
      &  kLowC

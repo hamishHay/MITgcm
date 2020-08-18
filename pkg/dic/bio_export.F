@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/dic/bio_export.F,v 1.29 2014/11/04 17:16:33 jmc Exp $
-C $Name:  $
-
 #include "DIC_OPTIONS.h"
 
 CBOP
@@ -11,7 +8,7 @@ C !INTERFACE: ==========================================================
 #ifdef ALLOW_FE
      I           PTR_FE,
 #endif
-     I           bioac,
+     O           bioac,
      I           bi,bj,iMin,iMax,jMin,jMax,
      I           myIter,myTime,myThid)
 

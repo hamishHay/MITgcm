@@ -1,11 +1,7 @@
-C $Header: /u/gcmpack/MITgcm/pkg/ecco/cost_bp_read.F,v 1.5 2014/09/29 16:47:49 gforget Exp $
-C $Name:  $
-
 #include "ECCO_OPTIONS.h"
 
-
       subroutine cost_bp_read(
-     I localobsfile, localstartdate, 
+     I localobsfile, localstartdate,
      O localobs, localmask,
      I irec,myThid)
 
@@ -41,10 +37,10 @@ c     == routine arguments ==
 
       character*(MAX_LEN_FNAM) localobsfile
       integer localstartdate(4)
-      _RL localobs   (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
-      _RL localmask  (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
+      _RL localobs   (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
+      _RL localmask  (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
       integer irec
-      integer mythid
+      integer myThid
 
 #ifdef ALLOW_ECCO
 
@@ -84,15 +80,14 @@ c     == end of interface ==
       parameter (spval = -998. )
 ce    --> there is certainly a better place for this.
 
-      jtlo = mybylo(mythid)
-      jthi = mybyhi(mythid)
-      itlo = mybxlo(mythid)
-      ithi = mybxhi(mythid)
+      jtlo = myByLo(myThid)
+      jthi = myByHi(myThid)
+      itlo = myBxLo(myThid)
+      ithi = myBxHi(myThid)
       jmin = 1
-      jmax = sny
+      jmax = sNy
       imin = 1
-      imax = snx
-
+      imax = sNx
 
        beginlocal = localstartdate(1)/10000
        beginmodel = modelstartdate(1)/10000
@@ -116,8 +111,8 @@ ce    --> there is certainly a better place for this.
       endif
 
       if ( (obsrec.GT.0).AND.(imonth.GT.0) ) then
-        call mdsreadfield( fnametmp, cost_iprec, cost_yftype, 1,
-     &                   localobs, imonth, mythid )
+       CALL READ_REC_3D_RL( fnametmp, cost_iprec, 1,
+     &                      localobs, imonth, 0, myThid )
       else
         do bj = jtlo,jthi
          do bi = itlo,ithi
@@ -157,6 +152,5 @@ c              endif
 
 #endif
 
-      return
-      end
-
+      RETURN
+      END

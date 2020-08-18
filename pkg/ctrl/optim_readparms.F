@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/ctrl/optim_readparms.F,v 1.6 2017/08/09 15:23:38 mlosch Exp $
-C $Name:  $
-
 #include "CTRL_OPTIONS.h"
 
 
@@ -41,6 +38,10 @@ c     == local variables ==
       integer errio
       integer il
       integer iUnit
+c     this is a dummy parameter that is never used; it is introduced here
+c     so that we can have compatible namelists between mitgmcuv_ad and
+c     optim.x compiled from optim_m1qn3
+      _RL dfminFrac
 
       character*(max_len_prec) record
       character*(max_len_mbuf) msgbuf
@@ -56,7 +57,7 @@ c--   Optimization parameters.
       namelist /optim/
      &                 optimcycle, nvars,
      &                 nondimcontrol,
-     &                 numiter, nfunc, fmin, iprint,
+     &                 numiter, nfunc, fmin, dfminFrac, iprint,
      &                 epsf, epsx, epsg,
      &                 nupdate, eps
 
@@ -79,6 +80,7 @@ c--     Set default values.
         numiter       =   0
         nfunc         =   1
         fmin          =   0.0 _d 0
+        dfminFrac     =   0.0 _d 0
         iprint        =  10
         epsx          =   1.e-6
         epsg          =   1.e-6

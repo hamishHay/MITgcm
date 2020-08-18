@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/gmredi/gmredi_calc_psi_b.F,v 1.14 2015/10/15 23:06:36 gforget Exp $
-C $Name:  $
-
 #include "GMREDI_OPTIONS.h"
 #ifdef ALLOW_AUTODIFF
 # include "AUTODIFF_OPTIONS.h"
@@ -159,6 +156,12 @@ C-  Compute the 2 stream-function Components ( GM bolus vel.)
 #ifdef GM_VISBECK_VARIABLE_K
      &      +op5*(VisbeckK(i-1,j,bi,bj)+VisbeckK(i,j,bi,bj))
 #endif
+#ifdef ALLOW_GM_LEITH_QG
+     &      +op25*( GM_LeithQG_K(i-1,j,km1,bi,bj)
+     &            + GM_LeithQG_K( i ,j,km1,bi,bj)
+     &            + GM_LeithQG_K(i-1,j,k,bi,bj)
+     &            + GM_LeithQG_K( i ,j,k,bi,bj) )
+#endif
      &      )*maskW(i,j,k,bi,bj)
 #ifdef ALLOW_EDDYPSI
      &     +eddyPsiX(i,j,k,bi,bj)*maskW(i,j,k,bi,bj)
@@ -181,6 +184,12 @@ C-  Compute the 2 stream-function Components ( GM bolus vel.)
 #endif
 #ifdef GM_VISBECK_VARIABLE_K
      &      +op5*(VisbeckK(i,j-1,bi,bj)+VisbeckK(i,j,bi,bj))
+#endif
+#ifdef ALLOW_GM_LEITH_QG
+     &      +op25*( GM_LeithQG_K(i,j-1,km1,bi,bj)
+     &            + GM_LeithQG_K(i, j ,km1,bi,bj)
+     &            + GM_LeithQG_K(i,j-1,k,bi,bj)
+     &            + GM_LeithQG_K(i, j ,k,bi,bj) )
 #endif
      &      )*maskS(i,j,k,bi,bj)
 #ifdef ALLOW_EDDYPSI

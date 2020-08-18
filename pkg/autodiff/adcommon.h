@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/autodiff/adcommon.h,v 1.38 2016/10/13 23:04:14 mmazloff Exp $
-C $Name:  $
-
 C--   These common blocks are extracted from the
 C--   automatically created tangent linear code.
 C--   You need to make sure that they are up-to-date
@@ -14,15 +11,13 @@ C--   heimbach@mit.edu 11-Jan-2001
      &                     adetan,
      &                     aduvel, advvel, adwvel,
      &                     adtheta, adsalt,
-     &                     adgu, adgv, 
+     &                     adgu, adgv,
 #ifdef ALLOW_ADAMSBASHFORTH_3
      &                     adgunm, adgvnm, adgtnm, adgsnm
 #else
      &                     adgunm1, adgvnm1, adgtnm1, adgsnm1
 #endif
       _RL adetan(1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
-      _RL adgs(1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
-      _RL adgt(1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
       _RL adgu(1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
       _RL adgv(1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
       _RL adsalt(1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
@@ -40,6 +35,13 @@ C--   heimbach@mit.edu 11-Jan-2001
       _RL adgsnm1(1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
       _RL adgunm1(1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
       _RL adgvnm1(1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
+#endif
+
+#ifdef USE_OLD_EXTERNAL_FORCING
+c     common /addynvars_old/
+c    &                   adgt,   adgs
+c     _RL adgs(1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
+c     _RL adgt(1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
 #endif
 
       common /addynvars_r_2/
@@ -75,11 +77,6 @@ C--   heimbach@mit.edu 11-Jan-2001
       COMMON /adffields_SSS/ adSSS
       COMMON /adffields_lambdaThetaClimRelax/ adlambdaThetaClimRelax
       COMMON /adffields_lambdaSaltClimRelax/ adlambdaSaltClimRelax
-#ifdef ATMOSPHERIC_LOADING
-      COMMON /adffields_pload/ adpload
-      COMMON /adffields_sIceLoad/ adsIceLoad
-#endif
-
       _RS  adfu       (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
       _RS  adfv       (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
       _RS  adQnet     (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
@@ -92,7 +89,10 @@ C--   heimbach@mit.edu 11-Jan-2001
      &    (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
       _RS  adlambdaSaltClimRelax
      &    (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
+
 #ifdef ATMOSPHERIC_LOADING
+      COMMON /adffields_pload/ adpload
+      COMMON /adffields_sIceLoad/ adsIceLoad
       _RS  adpload    (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
       _RS  adsIceLoad (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
 #endif
@@ -138,21 +138,27 @@ C--   heimbach@mit.edu 11-Jan-2001
 
 # ifdef ALLOW_RUNOFF
       _RL adrunoff    (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
-      common /adexf_runoff_r/ adrunoff
+      _RL adrunoff0   (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
+      _RL adrunoff1   (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
+      common /exfl_runoff_r_ad/ adrunoff, adrunoff0, adrunoff1
 # endif
 
 # ifdef ALLOW_ATM_TEMP
       _RL adatemp     (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
       _RL adaqh       (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
+      _RL adhs        (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
+      _RL adhl        (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
       _RL adlwflux    (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
+      _RL adevap      (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
       _RL adprecip    (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
-      common /adexf_atm_temp_r/ adatemp, adaqh, adlwflux,
-     & adprecip
+      _RL adsnowprecip(1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
+      common /adexf_atm_temp_r/ adatemp, adaqh, adhs, adhl,
+     & adlwflux, adevap, adprecip, adsnowprecip
 #  ifdef SHORTWAVE_HEATING
       _RL adswflux    (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
       common /adexf_swflux_r/ adswflux
 #  endif
-# endif
+# endif /* ALLOW_ATM_TEMP */
 
       _RL aduwind     (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
       _RL advwind     (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
@@ -161,8 +167,7 @@ C--   heimbach@mit.edu 11-Jan-2001
 # ifdef ALLOW_DOWNWARD_RADIATION
       _RL adswdown    (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
       _RL adlwdown    (1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
-      common /adexf_rad_down_r/
-     &     adswdown, adlwdown
+      common /adexf_rad_down_r/ adswdown, adlwdown
 # endif
 # ifdef ALLOW_CLIMSST_RELAXATION
       _RL adclimsst(1-olx:snx+olx,1-oly:sny+oly,nsx,nsy)
@@ -185,16 +190,14 @@ C--   heimbach@mit.edu 11-Jan-2001
      &     adarea, adheff, adhsnow, aduice, advice
 # ifdef SEAICE_VARIABLE_SALINITY
       _RL adhsalt (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
-      common /seaice_salinity_r/
-     &     adhsalt
+      common /seaice_salinity_r/ adhsalt
 # endif
 #endif /* ALLOW_SEAICE */
 
 #ifdef ALLOW_GGL90
       _RL adggl90tke     (1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
       _RL adggl90diffkr  (1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
-      common /adggl90_fields/
-     &     adggl90tke, adggl90diffkr
+      common /adggl90_fields/ adggl90tke, adggl90diffkr
 #endif
 
 #ifdef ALLOW_DEPTH_CONTROL

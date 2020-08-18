@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/atm_phys/atm_phys_readparms.F,v 1.5 2017/08/09 15:23:39 mlosch Exp $
-C $Name:  $
-
 #include "ATM_PHYS_OPTIONS.h"
 
 C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
@@ -38,8 +35,8 @@ C     iUnit      :: Work variable for IO unit number
      &       atmPhys_addTendU, atmPhys_addTendV,
      &       atmPhys_tauDampUV, atmPhys_dampUVfac,
      &       atmPhys_stepSST,
-     &       atmPhys_sstFile,  atmPhys_qFlxFile,
-     &       atmPhys_mxldFile, atmPhys_albedoFile
+     &       atmPhys_sstFile, atmPhys_qFlxFile, atmPhys_mxldFile,
+     &       atmPhys_albedoFile, atmPhys_ozoneFile
 
       _BEGIN_MASTER(myThid)
 
@@ -68,6 +65,7 @@ C-    additional parameters:
       atmPhys_qFlxFile  = ' '
       atmPhys_mxldFile  = ' '
       atmPhys_albedoFile= ' '
+      atmPhys_ozoneFile = ' '
 
       WRITE(msgBuf,'(A)') 'ATM_PHYS_READPARMS: opening data.atm_phys'
       CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,

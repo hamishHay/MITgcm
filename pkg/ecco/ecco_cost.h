@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/ecco/ecco_cost.h,v 1.69 2014/10/16 20:02:34 gforget Exp $
-C $Name:  $
-
 c     ==================================================================
 c     HEADER AVERAGES
 c     ==================================================================
@@ -82,7 +79,6 @@ c             intantaneous field.
      &                    sbar,
 #ifdef ALLOW_SIGMAR_COST_CONTRIBUTION
      &                    sigmaRbar,
-     &                    sigmaRfield,
 #endif
      &                    sstbar,
      &                    psbar,
@@ -108,7 +104,6 @@ c             intantaneous field.
      &                    wfmean
 
 #ifdef ALLOW_SIGMAR_COST_CONTRIBUTION
-      _RL sigmaRfield    (1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
       _RL sigmaRbar      (1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
       _RL sigmaRbar_gen  (1-olx:snx+olx,1-oly:sny+oly,nr,nsx,nsy)
 #endif

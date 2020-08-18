@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/kpp/kpp_calc.F,v 1.57 2014/09/11 19:23:23 jmc Exp $
-C $Name:  $
-
 #include "KPP_OPTIONS.h"
 #ifdef ALLOW_AUTODIFF
 # include "AUTODIFF_OPTIONS.h"
@@ -431,7 +428,7 @@ c------------------------------------------------------------------------
 
       CALL KPP_FORCING_SURF(
      I     work2, surfaceForcingU, surfaceForcingV,
-     I     surfaceForcingT, surfaceForcingS, surfaceForcingTice,
+     I     surfaceForcingT, surfaceForcingS, adjustColdSST_diag,
      I     Qsw,
 #ifdef ALLOW_SALT_PLUME
      I     temp1, temp2,

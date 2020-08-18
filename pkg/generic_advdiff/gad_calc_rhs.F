@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/generic_advdiff/gad_calc_rhs.F,v 1.74 2015/08/05 20:12:44 jmc Exp $
-C $Name:  $
-
 #include "GAD_OPTIONS.h"
 
 CBOP
@@ -15,7 +12,7 @@ C !INTERFACE: ==========================================================
      I           deltaTLev, trIdentity,
      I           advectionScheme, vertAdvecScheme,
      I           calcAdvection, implicitAdvection, applyAB_onTracer,
-     I           trUseDiffKr4, trUseGMRedi, trUseKPP,
+     I           trUseDiffKr4, trUseGMRedi, trUseKPP, trUseSmolHack,
      O           fZon, fMer,
      U           fVerT, gTracer,
      I           myTime, myIter, myThid )
@@ -82,6 +79,7 @@ C applyAB_onTracer :: apply Adams-Bashforth on Tracer (rather than on gTr)
 C trUseDiffKr4     :: true if this tracer uses vertical bi-harmonic diffusion
 C trUseGMRedi      :: true if this tracer uses GM-Redi
 C trUseKPP         :: true if this tracer uses KPP
+C trUseSmolHack    :: true if this tracer uses Smolarkiewicz-Hack to remain > 0
 C myTime           :: current time
 C myIter           :: iteration number
 C myThid           :: thread number
@@ -107,7 +105,7 @@ C myThid           :: thread number
       INTEGER advectionScheme, vertAdvecScheme
       LOGICAL calcAdvection
       LOGICAL implicitAdvection, applyAB_onTracer
-      LOGICAL trUseDiffKr4, trUseGMRedi, trUseKPP
+      LOGICAL trUseDiffKr4, trUseGMRedi, trUseKPP, trUseSmolHack
       _RL     myTime
       INTEGER myIter, myThid
 
@@ -613,11 +611,15 @@ C           boundary condition.
         ENDDO
        ENDDO
       ELSE
-        CALL GAD_DIFF_R(bi,bj,k,KappaR,TracerN,df,myThid)
+        CALL GAD_DIFF_R(
+     I                    bi,bj,k, maskup, KappaR, TracerN,
+     O                    df, myThid )
       ENDIF
 
       IF ( trUseDiffKr4 ) THEN
-        CALL GAD_BIHARM_R( bi,bj,k, diffKr4, TracerN, df, myThid )
+        CALL GAD_BIHARM_R(
+     I                    bi,bj,k, maskUp, diffKr4, TracerN,
+     U                    df, myThid )
       ENDIF
 
 #ifdef ALLOW_GMREDI
@@ -625,7 +627,7 @@ C-    GM/Redi flux in R
       IF ( trUseGMRedi ) THEN
         CALL GMREDI_RTRANSPORT(
      I         trIdentity, bi, bj, k, iMin, iMax, jMin, jMax,
-     I         TracerN,
+     I         maskUp, TracerN,
      U         df,
      I         myThid )
       ENDIF
@@ -633,7 +635,7 @@ C-    GM/Redi flux in R
 
       DO j=1-OLy,sNy+OLy
        DO i=1-OLx,sNx+OLx
-        fVerT(i,j,kUp) = fVerT(i,j,kUp) + df(i,j)*maskUp(i,j)
+        fVerT(i,j,kUp) = fVerT(i,j,kUp) + df(i,j)
        ENDDO
       ENDDO
 
@@ -712,10 +714,7 @@ C        does it only if k=1 (never the case here)
 coj   Hack to make redi (and everything else in this s/r) positive
 coj   (see Smolarkiewicz MWR 1989 and Bott MWR 1989).
 coj   Only works if 'down' is k+1 and k loop in thermodynamics is k=Nr,1,-1
-coj
-coj   Apply to all tracers except temperature
-      IF ( trIdentity.NE.GAD_TEMPERATURE .AND.
-     &     trIdentity.NE.GAD_SALINITY ) THEN
+      IF ( trUseSmolHack ) THEN
        DO j=1-OLy,sNy+OLy-1
         DO i=1-OLx,sNx+OLx-1
 coj   Add outgoing fluxes
@@ -765,7 +764,7 @@ coj   ... and reapply
         ENDDO
        ENDDO
       ENDIF
-#endif
+#endif /* GAD_SMOLARKIEWICZ_HACK */
 
 C--   Divergence of fluxes
 C     Anelastic: scale vertical fluxes by rhoFac and leave Horizontal fluxes unchanged

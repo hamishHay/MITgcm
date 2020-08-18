@@ -1,10 +1,16 @@
-C $Header: /u/gcmpack/MITgcm/model/src/the_main_loop.F,v 1.182 2017/06/20 11:32:33 mlosch Exp $
-C $Name:  $
-
 #include "PACKAGES_CONFIG.h"
 #include "CPP_OPTIONS.h"
 #ifdef ALLOW_AUTODIFF
 # include "AUTODIFF_OPTIONS.h"
+#endif
+#ifdef ALLOW_GENERIC_ADVDIFF
+# include "GAD_OPTIONS.h"
+#endif
+#ifdef ALLOW_GGL90
+# include "GGL90_OPTIONS.h"
+#endif
+#ifdef ALLOW_GMREDI
+# include "GMREDI_OPTIONS.h"
 #endif
 #ifdef ALLOW_OBCS
 # include "OBCS_OPTIONS.h"
@@ -12,20 +18,20 @@ C $Name:  $
 #ifdef ALLOW_SEAICE
 # include "SEAICE_OPTIONS.h"
 #endif
-#ifdef ALLOW_GENERIC_ADVDIFF
-# include "GAD_OPTIONS.h"
+#ifdef ALLOW_GCHEM
+# include "GCHEM_OPTIONS.h"
 #endif
-#ifdef ALLOW_GMREDI
-# include "GMREDI_OPTIONS.h"
+#ifdef ALLOW_DIC
+# include "DIC_OPTIONS.h"
 #endif
-#ifdef ALLOW_STREAMICE
-# include "STREAMICE_OPTIONS.h"
-#endif
-#ifdef ALLOW_GGL90
-# include "GGL90_OPTIONS.h"
+#ifdef ALLOW_BLING
+# include "BLING_OPTIONS.h"
 #endif
 #ifdef ALLOW_EXF
 # include "EXF_OPTIONS.h"
+#endif
+#ifdef ALLOW_STREAMICE
+# include "STREAMICE_OPTIONS.h"
 #endif
 #ifdef ALLOW_COST
 # include "COST_OPTIONS.h"
@@ -102,6 +108,7 @@ c They provide the fields to be stored.
 #   include "PTRACERS_START.h"
 #  endif
 #  ifdef ALLOW_GCHEM
+#   include "GCHEM_SIZE.h"
 #   include "GCHEM_FIELDS.h"
 #  endif
 #  ifdef ALLOW_CFC
@@ -114,10 +121,6 @@ c They provide the fields to be stored.
 #   include "DIC_CTRL.h"
 #   include "DIC_COST.h"
 #  endif
-#  ifdef ALLOW_BLING
-#   include "BLING_VARS.h"
-#   include "BLING_LOAD.h"
-#  endif
 #  ifdef ALLOW_OBCS
 #   include "OBCS_PARAMS.h"
 #   include "OBCS_FIELDS.h"
@@ -127,11 +130,16 @@ c They provide the fields to be stored.
 #   endif
 #  endif
 #  ifdef ALLOW_EXF
-#   include "EXF_FIELDS.h"
 #   ifdef ALLOW_BULKFORMULAE
 #    include "EXF_CONSTANTS.h"
 #   endif
+#   include "EXF_INTERP_SIZE.h"
+#   include "EXF_FIELDS.h"
 #  endif /* ALLOW_EXF */
+#  ifdef ALLOW_BLING
+#   include "BLING_VARS.h"
+#   include "BLING_LOAD.h"
+#  endif
 #  ifdef ALLOW_SEAICE
 #   include "SEAICE_SIZE.h"
 #   include "SEAICE.h"
@@ -688,6 +696,11 @@ c$openad DEPENDENT(fc)
 # endif /* ALLOW_OPENAD */
 
 #endif /* ALLOW_COST */
+
+#ifdef USE_PDAF
+C     PDAF finalization
+      CALL FINALIZE_PDAF( )
+#endif
 
       _BARRIER
       CALL TIMER_STOP ('MAIN LOOP           [THE_MAIN_LOOP]', myThid)

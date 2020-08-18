@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/ptracers/ptracers_diagnostics_init.F,v 1.11 2014/07/18 22:17:28 jmc Exp $
-C $Name:  $
-
 #include "PTRACERS_OPTIONS.h"
 
 CBOP
@@ -140,6 +137,13 @@ C--    add diagnostics for Forcing and Adams-Bashforth tendency increment
        diagName  = 'AB_g'//diagSufx
        WRITE(diagTitle,'(2A)') locName(1:ilnb),
      &                   ' tendency from Adams-Bashforth'
+       diagCode  = 'SMR     MR      '
+       CALL DIAGNOSTICS_ADDTOLIST( diagNum,
+     I           diagName, diagCode, diagUnits, diagTitle, 0, myThid )
+
+       diagName  = 'Tp_g'//diagSufx
+       WRITE(diagTitle,'(2A)') locName(1:ilnb),
+     &         ' total transport tendency (before gchem_forcing_sep)'
        diagCode  = 'SMR     MR      '
        CALL DIAGNOSTICS_ADDTOLIST( diagNum,
      I           diagName, diagCode, diagUnits, diagTitle, 0, myThid )

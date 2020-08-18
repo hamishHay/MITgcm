@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/model/src/ini_curvilinear_grid.F,v 1.54 2017/04/04 23:22:38 jmc Exp $
-C $Name:  $
-
 #include "PACKAGES_CONFIG.h"
 #include "CPP_OPTIONS.h"
 
@@ -60,6 +57,10 @@ C     == Local variables ==
       CHARACTER*(MAX_LEN_MBUF) tmpBuf
       INTEGER  ILNBLNK
       EXTERNAL ILNBLNK
+#endif
+#ifdef ALLOW_EXCH2
+      CHARACTER*(6) fmtStr
+      INTEGER iTmp
 #endif
 CEOP
 
@@ -263,7 +264,9 @@ C--   Only do I/O if I am the master thread
 C-    Use face number:
         jG = W2_myTileList(bi,bj)
         iG = exch2_myface(jG)
-        WRITE(tmpBuf,'(A,I4)') 'tile:',jG
+        iTmp = MAX(4,1 + INT(LOG10(DFLOAT(W2_maxNbTiles))))
+        WRITE(fmtStr,'(A,I1,A)') '(A,I',iTmp,')'
+        WRITE(tmpBuf,fmtStr) 'tile:',jG
 #else
 C-    Tile Id number = Bi + (Bj-1)*(nSx*nPx)  with tile global-indices Bi,Bj
         iG = bi+(myXGlobalLo-1)/sNx

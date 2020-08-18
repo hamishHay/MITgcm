@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/diagnostics/diagnostics_utils.F,v 1.36 2017/07/23 00:24:18 jmc Exp $
-C $Name:  $
-
 #include "DIAG_OPTIONS.h"
 
 C--   File diagnostics_utils.F: General purpose support routines
@@ -656,6 +653,8 @@ C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
        IF ( diagName .EQ. 'SIsigI  ' ) newName = 'SIsig1  '
        IF ( diagName .EQ. 'SIsigII ' ) newName = 'SIsig2  '
       ENDIF
+       IF ( diagName .EQ. 'Um_dPHdx' ) newName = 'Um_dPhiX'
+       IF ( diagName .EQ. 'Vm_dPHdy' ) newName = 'Vm_dPhiY'
 
       IF ( newName.EQ.blkName ) THEN
         DIAGS_RENAMED = diagName

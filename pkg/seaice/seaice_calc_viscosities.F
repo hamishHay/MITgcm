@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/seaice/seaice_calc_viscosities.F,v 1.36 2016/05/17 15:26:46 mlosch Exp $
-C $Name:  $
-
 #include "SEAICE_OPTIONS.h"
 #ifdef ALLOW_AUTODIFF
 # include "AUTODIFF_OPTIONS.h"
@@ -9,7 +6,7 @@ C $Name:  $
 CBOP
 CStartOfInterface
       SUBROUTINE SEAICE_CALC_VISCOSITIES(
-     I     e11, e22, e12, zMin, zMax, hEffM, press0, tnsFac,
+     I     e11, e22, e12, zMin, zMax, HEFFM, press0, tnsFac,
      O     eta, etaZ, zeta, zetaZ, press, deltaC,
      I     iStep, myTime, myIter, myThid )
 C     *==========================================================*
@@ -46,7 +43,7 @@ C     strain rate tensor
 C
       _RL zMin  (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
       _RL zMax  (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
-      _RL hEffM (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
+      _RL HEFFM (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
 C
       _RL press0(1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
       _RL press (1-OLx:sNx+OLx,1-OLy:sNy+OLy,nSx,nSy)
@@ -75,15 +72,13 @@ C     em            - e11-e22 (abbreviation)
 #ifdef SEAICE_ALLOW_TEM
       _RL etaMax, etaDen
 #endif /* SEAICE_ALLOW_TEM */
-      INTEGER k
       _RL sumNorm, maskZ
 #ifdef SEAICE_ZETA_SMOOTHREG
       _RL argTmp
 #endif /* SEAICE_ZETA_SMOOTHREG */
 CEOP
 
-C--   FIRST SET UP BASIC CONSTANTS
-      k=1
+C--   basic constants
       recip_e2=0. _d 0
       IF ( SEAICE_eccen .NE. 0. _d 0 ) recip_e2=ONE/(SEAICE_eccen**2)
       deltaMinSq = SEAICE_deltaMin**2
@@ -163,7 +158,7 @@ C     put min and max viscosities in
           zeta (I,J,bi,bj) = MIN(ZMAX(I,J,bi,bj),zeta(I,J,bi,bj))
 #endif /*  SEAICE_ZETA_SMOOTHREG */
           zeta (I,J,bi,bj) = MAX(ZMIN(I,J,bi,bj),zeta(I,J,bi,bj))
-C     set viscosities to zero at hEffM flow pts
+C     set viscosities to zero at HEFFM flow pts
           zeta (I,J,bi,bj) = zeta(I,J,bi,bj)*HEFFM(I,J,bi,bj)
           eta  (I,J,bi,bj) = recip_e2*zeta(I,J,bi,bj)
 C     "replacement pressure"
@@ -196,8 +191,8 @@ CML     &         ) * ( 1. _d 0 - tnsFac(I,J,bi,bj) )
 C     compute eta at Z-points by simple averaging
         DO j=1-OLy+1,sNy+OLy-1
          DO i=1-OLx+1,sNx+OLx-1
-          sumNorm  = maskC(I,J,  k,bi,bj)+maskC(I-1,J,  k,bi,bj)
-     &             + maskC(I,J-1,k,bi,bj)+maskC(I-1,J-1,k,bi,bj)
+          sumNorm  = HEFFM(I,J,  bi,bj)+HEFFM(I-1,J,  bi,bj)
+     &             + HEFFM(I,J-1,bi,bj)+HEFFM(I-1,J-1,bi,bj)
           IF ( sumNorm.GT.0. _d 0 ) sumNorm = 1. _d 0 / sumNorm
           etaZ(I,J,bi,bj) = sumNorm *
      &         ( eta (I,J  ,bi,bj)  + eta (I-1,J  ,bi,bj)
@@ -213,8 +208,8 @@ C     about the no-slip boundary conditions
         IF (.NOT.SEAICE_no_slip) THEN
          DO J=1-OLy+1,sNy+OLy-1
           DO I=1-OLx+1,sNx+OLx-1
-           maskZ = maskC(I,J,  k,bi,bj)*maskC(I-1,J,  k,bi,bj)
-     &          *  maskC(I,J-1,k,bi,bj)*maskC(I-1,J-1,k,bi,bj)
+           maskZ = HEFFM(I,J,  bi,bj)*HEFFM(I-1,J,  bi,bj)
+     &          *  HEFFM(I,J-1,bi,bj)*HEFFM(I-1,J-1,bi,bj)
            etaZ (I,J,bi,bj) =  etaZ(I,J,bi,bj) * maskZ
            zetaZ(I,J,bi,bj) = zetaZ(I,J,bi,bj) * maskZ
           ENDDO

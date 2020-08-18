@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/profiles/profiles_interp.F,v 1.16 2017/01/10 15:40:59 gforget Exp $
-C $Name:  $
-
 #include "PROFILES_OPTIONS.h"
 #ifdef ALLOW_ECCO
 # include "ECCO_OPTIONS.h"
@@ -96,11 +93,11 @@ c horizontal interpolation:
 #ifdef ALLOW_ECCO
         elseif (var_cur.EQ.'eta') then
                tab_coeffs1(q)=m_eta(i_cur(q),j_cur(q),bi,bj)
+#endif
         elseif (var_cur.EQ.'UE') then
                tab_coeffs1(q)=m_UE(i_cur(q),j_cur(q),k,bi,bj)
         elseif (var_cur.EQ.'VN') then
                tab_coeffs1(q)=m_VN(i_cur(q),j_cur(q),k,bi,bj)
-#endif
         else
                tab_coeffs1(q)=0. _d 0
         endif

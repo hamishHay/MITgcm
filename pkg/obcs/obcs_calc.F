@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/obcs/obcs_calc.F,v 1.34 2012/11/15 15:55:42 dimitri Exp $
-C $Name:  $
-
 #include "OBCS_OPTIONS.h"
 
 CBOP
@@ -423,18 +420,6 @@ C     Orlanski and prescribed boundary conditions
        CALL OBCS_CALC_STEVENS( futureTime, futureIter, myThid )
       ENDIF
 #endif /* ALLOW_OBCS_STEVENS */
-
-#ifdef ALLOW_OBCS_BALANCE
-      IF ( useOBCSbalance ) THEN
-        CALL OBCS_BALANCE_FLOW( futureTime, futureIter, myThid )
-      ENDIF
-#endif /* ALLOW_OBCS_BALANCE */
-
-#ifdef ALLOW_OBCS_TIDES
-      IF ( useOBCStides ) THEN
-        CALL OBCS_ADD_TIDES( futureTime, futureIter, myThid )
-      ENDIF
-#endif /* ALLOW_OBCS_TIDES */
 
 #ifdef ALLOW_DEBUG
       IF (debugMode) CALL DEBUG_LEAVE('OBCS_CALC',myThid)

@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/ggl90/ggl90_calc.F,v 1.35 2016/10/26 00:49:04 jmc Exp $
-C $Name:  $
-
 #include "GGL90_OPTIONS.h"
 
 CBOP
@@ -479,8 +476,6 @@ CML         IDEMIX_RiNumber = 1./GGL90eps
          ENDDO
         ENDDO
        ELSE
-#else /* ndef ALLOW_GGL90_IDEMIX */
-       IF (.TRUE.) THEN
 #endif /* ALLOW_GGL90_IDEMIX */
         DO j=jMin,jMax
          DO i=iMin,iMax
@@ -491,7 +486,9 @@ CML         IDEMIX_RiNumber = 1./GGL90eps
           TKEPrandtlNumber(i,j,k) = MIN(10. _d 0,prTemp)
          ENDDO
         ENDDO
+#ifdef ALLOW_GGL90_IDEMIX
        ENDIF
+#endif /* ALLOW_GGL90_IDEMIX */
 
        DO j=jMin,jMax
         DO i=iMin,iMax

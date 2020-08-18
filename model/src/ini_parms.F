@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/model/src/ini_parms.F,v 1.278 2017/10/19 00:30:13 jmc Exp $
-C $Name:  $
-
 #include "PACKAGES_CONFIG.h"
 #include "CPP_OPTIONS.h"
 #ifdef ALLOW_EXCH2
@@ -39,6 +36,7 @@ C     dxSpacing, dySpacing :: Default spacing in X and Y.
 C                          :: Units are that of coordinate system
 C                          :: i.e. cartesian => metres
 C                          ::       s. polar => degrees
+C     useJamartWetPoints :: Use wet-point method for Coriolis (Jamart & Ozer 1986)
 C     SadournyCoriolis :: for backward compatibility
 C     deltaTtracer  :: Timestep for tracer equations ( s )
 C     forcing_In_AB :: flag to put all forcings (Temp,Salt,Tracers,Momentum)
@@ -54,6 +52,8 @@ C     xxxDefault :: Default value for variable xxx
       _RL  dySpacing
       _RL deltaTtracer
       CHARACTER*(MAX_LEN_MBUF) msgBuf
+      LOGICAL useJamartWetPoints
+      LOGICAL useEnergyConservingCoriolis
       LOGICAL SadournyCoriolis
       LOGICAL forcing_In_AB
       INTEGER goptCount
@@ -186,15 +186,14 @@ C--   Continuous equation parameters
      & viscAhGrid, viscAhGridMax, viscAhGridMin,
      & viscC2leith, viscC4leith, smag3D_coeff, useSmag3D,
      & useFullLeith, useAnisotropicViscAgridMax, useStrainTensionVisc,
-     & useAreaViscLength,
-     & viscC2leithD, viscC4leithD, viscC2smag, viscC4smag,
-     & viscAhD, viscAhZ, viscA4D, viscA4Z,
+     & useAreaViscLength, viscC2leithD, viscC4leithD, viscC2LeithQG,
+     & viscC2smag, viscC4smag, viscAhD, viscAhZ, viscA4D, viscA4Z,
      & viscA4, viscA4W,
      & viscA4Max, viscA4Grid, viscA4GridMax, viscA4GridMin,
      & viscA4ReMax, viscAhReMax,
      & cosPower, viscAstrain, viscAtension,
      & diffKhT, diffK4T, diffKhS, diffK4S,
-     & tRef, sRef, tRefFile, sRefFile, rhoRefFile,
+     & surf_pRef, tRef, sRef, tRefFile, sRefFile, rhoRefFile,
      & eosType, selectP_inEOS_Zc, integr_GeoPot, selectFindRoSurf,
      & HeatCapacity_Cp, celsius2K, atm_Cp, atm_Rd, atm_Rq, atm_Po,
      & no_slip_sides, sideDragFactor, no_slip_bottom, bottomVisc_pCell,
@@ -202,9 +201,9 @@ C--   Continuous equation parameters
      & momViscosity,  momAdvection, momForcing, momTidalForcing,
      & useCoriolis, useConstantF, useBetaPlaneF, useSphereF,
      & use3dCoriolis, momPressureForcing,
-     & metricTerms, vectorInvariantMomentum,
-     & tempDiffusion, tempAdvection, tempForcing, addFrictionHeating,
-     & saltDiffusion, saltAdvection, saltForcing,
+     & metricTerms, vectorInvariantMomentum, addFrictionHeating,
+     & tempDiffusion, tempAdvection, tempForcing, temp_stayPositive,
+     & saltDiffusion, saltAdvection, saltForcing, salt_stayPositive,
      & implicSurfPress, implicDiv2DFlow, implicitNHPress,
      & implicitFreeSurface, rigidLid, freeSurfFac,
      & hFacMin, hFacMinDz, hFacMinDp, hFacMinDr,
@@ -228,10 +227,11 @@ C--   Continuous equation parameters
      & hMixCriteria, dRhoSmall, hMixSmooth,
      & tempAdvScheme, tempVertAdvScheme,
      & saltAdvScheme, saltVertAdvScheme, tracerAdvScheme,
-     & multiDimAdvection, useEnergyConservingCoriolis,
-     & useCDscheme, useJamartWetPoints, useJamartMomAdv, useNHMTerms,
-     & selectVortScheme, upwindVorticity, highOrderVorticity,
-     & SadournyCoriolis, useAbsVorticity, upwindShear, selectKEscheme,
+     & multiDimAdvection, useNHMTerms, useCDscheme,
+     & useAbsVorticity, selectCoriScheme, useJamartWetPoints,
+     & useEnergyConservingCoriolis, selectVortScheme, SadournyCoriolis,
+     & useJamartMomAdv, upwindVorticity, highOrderVorticity,
+     & upwindShear, selectKEscheme,
      & selectAddFluid, useRealFreshWaterFlux, convertFW2Salt,
      & temp_EvPrRn, salt_EvPrRn, trac_EvPrRn,
      & temp_addMass, salt_addMass, zonal_filt_lat,
@@ -276,7 +276,10 @@ C--   Gridding parameters
      & phiEuler, thetaEuler, psiEuler,
      & rSphere, radius_fromHorizGrid, deepAtmosphere, seaLev_Z,
      & top_Pres, delZ, delP, delR, delRc, delRFile, delRcFile,
-     & useMin4hFacEdges, selectSigmaCoord, rSigmaBnd, hybSigmFile,
+     & useMin4hFacEdges, interViscAr_pCell, interDiffKr_pCell,
+     & pCellMix_select, pCellMix_maxFac, pCellMix_delR,
+     & pCellMix_viscAr, pCellMix_diffKr,
+     & selectSigmaCoord, rSigmaBnd, hybSigmFile,
      & Ro_SeaLevel, rkFac, groundAtK1, thetaMin, phiMin
 
 C--   Input files
@@ -311,6 +314,9 @@ C     Defaults values for input parameters
      O   viscArDefault, diffKrTDefault, diffKrSDefault,
      O   hFacMinDrDefault, delRDefault,
      I   myThid )
+
+      useJamartWetPoints  = .FALSE.
+      useEnergyConservingCoriolis = .FALSE.
       SadournyCoriolis = .FALSE.
 
 C--   Initialise "which vertical coordinate system used" flags.
@@ -600,6 +606,40 @@ C-    use temp diffusivity as default salt diffusivity:
         IF ( selectAddFluid.GE.1 ) convertFW2Salt=-1
       ENDIF
 
+C--   for backward compatibility :
+      IF ( selectCoriScheme.EQ.UNSET_I ) THEN
+        selectCoriScheme = 0
+        IF ( useJamartWetPoints ) selectCoriScheme = 1
+        IF ( useEnergyConservingCoriolis .AND.
+     &       .NOT.vectorInvariantMomentum )
+     &    selectCoriScheme = selectCoriScheme + 2
+      ENDIF
+      IF ( vectorInvariantMomentum ) THEN
+        IF ( useJamartWetPoints .AND. selectCoriScheme.NE.1 ) THEN
+          WRITE(msgBuf,'(A,I5,A)')
+     &     'S/R INI_PARMS: selectCoriScheme=', selectCoriScheme,
+     &     ' conflicts with "useJamartWetPoints"'
+          CALL PRINT_ERROR( msgBuf, myThid )
+          errCount = errCount + 1
+        ENDIF
+      ELSE
+        IF ( useEnergyConservingCoriolis
+     &       .AND. selectCoriScheme.LT.2 ) THEN
+          WRITE(msgBuf,'(A,I5,A)')
+     &     'S/R INI_PARMS: selectCoriScheme=', selectCoriScheme,
+     &     ' conflicts with "useEnergyConservingCoriolis"'
+          CALL PRINT_ERROR( msgBuf, myThid )
+          errCount = errCount + 1
+        ENDIF
+        IF ( useJamartWetPoints .AND. selectCoriScheme.NE.1
+     &                          .AND. selectCoriScheme.NE.3 ) THEN
+          WRITE(msgBuf,'(A,I5,A)')
+     &     'S/R INI_PARMS: selectCoriScheme=', selectCoriScheme,
+     &     ' conflicts with "useJamartWetPoints"'
+          CALL PRINT_ERROR( msgBuf, myThid )
+          errCount = errCount + 1
+        ENDIF
+      ENDIF
       IF ( SadournyCoriolis ) THEN
 C--   for backward compatibility :
         IF ( selectVortScheme.EQ.UNSET_I ) selectVortScheme = 2
@@ -1053,6 +1093,17 @@ C     In cartesian coords distances are in metres
 C     In spherical polar distances are in degrees
       dxSpacing = UNSET_RL
       dySpacing = UNSET_RL
+C-    pCell-Mix  parameters:
+      interViscAr_pCell = .FALSE.
+      interDiffKr_pCell = .FALSE.
+      pCellMix_select = 0
+      pCellMix_maxFac = 1. _d 4
+      pCellMix_delR = 0.
+      DO k=1,Nr
+        pCellMix_viscAr(k) = viscArNr(k)
+        pCellMix_diffKr(k) = diffKrNrT(k)
+      ENDDO
+
       WRITE(msgBuf,'(A)') ' INI_PARMS ; starts to read PARM04'
       CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
      &                    SQUEEZE_RIGHT, myThid )

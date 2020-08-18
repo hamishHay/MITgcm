@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/model/src/apply_forcing.F,v 1.9 2017/10/04 20:40:35 jmc Exp $
-C $Name:  $
-
 #include "PACKAGES_CONFIG.h"
 #include "CPP_OPTIONS.h"
 
@@ -133,8 +130,11 @@ C     Add Tidal momentum forcing from 2-d geopotential anomaly
           gU_arr(i,j) = gU_arr(i,j)
      &      - recip_dxC(i,j,bi,bj)*recip_deepFacC(k)
      &      * ( phiTide2d(i,j,bi,bj) - phiTide2d(i-1,j,bi,bj) )
-     &      *_maskW(i,j,k,bi,bj)*recip_deepFac2C(k)
-C          WRITE(*,*) 'TIDE ', phiTide2d(i,j,bi,bj)
+     &      *_maskW(i,j,k,bi,bj)
+     &      *recip_deepFac2C(k)
+C          IF (i .EQ. 20 .AND. j .EQ. 0) THEN
+C            WRITE(*,*) 'TIDE ', phiTide2d(i,j,bi,bj)*recip_deepFac2C(k)
+C          ENDIF
 C     Last factor accounts for reduction in tidal potential
 C     with increasing depth (r/R)^2
         ENDDO
@@ -327,6 +327,7 @@ C     Add Tidal momentum forcing from 2-d geopotential anomaly
      &      - recip_dyC(i,j,bi,bj)*recip_deepFacC(k)
      &      *( phiTide2d(i,j,bi,bj) - phiTide2d(i,j-1,bi,bj) )
      &      *_maskS(i,j,k,bi,bj)
+     &      *recip_deepFac2C(k)
         ENDDO
        ENDDO
       ENDIF

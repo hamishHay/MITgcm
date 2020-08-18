@@ -1,6 +1,3 @@
-C $Header: /u/gcmpack/MITgcm/pkg/diagnostics/diagnostics_set_pointers.F,v 1.17 2017/07/23 00:28:37 jmc Exp $
-C $Name:  $
-
 #include "DIAG_OPTIONS.h"
 
 CBOP
@@ -220,6 +217,17 @@ C     and if it exists. Note: for now, only used to print message.
          ENDIF
 
         ENDIF
+       ENDDO
+      ENDDO
+
+C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
+C--   Set internal parameter "useDiag4AdjOutp" if Adj Diagnostics are found
+      DO ld=1,nlists
+       DO md=1,nfields(ld)
+c      DO md=1,nActive(ld)
+         nd = ABS(jdiag(md,ld))
+         useDiag4AdjOutp = useDiag4AdjOutp
+     &                .OR. ( gdiag(nd)(4:4).EQ.'A' )
        ENDDO
       ENDDO
 
