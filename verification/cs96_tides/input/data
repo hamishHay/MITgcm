@@ -76,9 +76,9 @@
 # Gridding parameters
  &PARM04
  usingCurvilinearGrid=.TRUE.,
- horizGridFile='cs96_dxC3_dXYa',
+# horizGridFile='cs96_dxC3_dXYa',
  radius_fromHorizGrid=6370.E3,
-# deepAtmosphere=.TRUE.,
+ deepAtmosphere=.TRUE.,
  delR= 500., 600., 714., 848., 1010., 1200., 1428., 1700., 42*2000.,
        1700., 1428., 1200., 1010., 848., 714., 600., 500.,
  rSphere=1550.E+3,

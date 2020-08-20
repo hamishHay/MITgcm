@@ -116,15 +116,18 @@ C-    read from file:
 
 C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
 
+C     MODIFIED BY HHAY TO ALWAYS VARY GRAVITY WITH DEPTH!!!!!!
+C     DO NOT PUSH THIS INTO A PROPER BRANCH!!!!!
 C--   Set gravity vertical profile
-      IF ( gravityFile .NE. ' ' ) THEN
-        kLen = ILNBLNK(gravityFile)
+C      IF ( gravityFile .NE. ' ' ) THEN
+      IF (.TRUE.) THEN
+C        kLen = ILNBLNK(gravityFile)
 C-    read from file and store, for now, in gravFacC:
-        CALL READ_GLVEC_RL( gravityFile, ' ', gravFacC, Nr, 1, myThid )
-        WRITE(msgBuf,'(3A)') 'S/R LOAD_REF_FILES: ',
-     &    'gravity vert. prof. loaded from file: ', gravityFile(1:kLen)
-        CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
-     &                      SQUEEZE_RIGHT, myThid )
+C        CALL READ_GLVEC_RL( gravityFile, ' ', gravFacC, Nr, 1, myThid )
+C        WRITE(msgBuf,'(3A)') 'S/R LOAD_REF_FILES: ',
+C     &    'gravity vert. prof. loaded from file: ', gravityFile(1:kLen)
+C        CALL PRINT_MESSAGE( msgBuf, standardMessageUnit,
+C     &                      SQUEEZE_RIGHT, myThid )
 
 C-    Set gravity vertical profile factor: assume surface-interface
 C     density-factor to be 1 (grav. acceleration @ rF(1) = gravity)
@@ -133,17 +136,21 @@ C       might be needed to initialise EOS coeffs (in ini_eos.F)
         gravFacF(1)   = 1. _d 0
 C       gravFac(k) = gravity ratio between layer k and top interface
         DO k=1,Nr
-          gravFacC(k) = gravFacC(k)*recip_gravity
+C OLD         gravFacC(k) = gravFacC(k)*recip_gravity
+C     FORCE LINEAR INCREASE OF GRAVITY WITH DEPTH
+C         gravFacC(k) = recip_deepFacC(k)
+
         ENDDO
         DO k=2,Nr
 C       since rkSign=-1, recip_drC(k) = 1./(rC(k-1)-rC(k))
-          gravFacF(k) = ( gravFacC(k-1)*(rF(k)-rC(k))
-     &                  + gravFacC(k)*(rC(k-1)-rF(k)) )*recip_drC(k)
+C          gravFacF(k) = ( gravFacC(k-1)*(rF(k)-rC(k))
+C     &                  + gravFacC(k)*(rC(k-1)-rF(k)) )*recip_drC(k)
+          gravFacF(k) = recip_deepFacF(k)
         ENDDO
 C       extrapolate down to the bottom:
         gravFacF(Nr+1) = ( gravFacC(Nr)*(rF(Nr+1)-rF(Nr))
      &                   + gravFacF(Nr)*(rC(Nr)-rF(Nr+1))
-     &                   ) / (rC(Nr)-rF(Nr))
+     &                   ) / (rC(Nr)-rF(Nr)) 
 C-      set reciprocal gravity-factor:
         DO k=1,Nr
           recip_gravFacC(k) = 1. _d 0/gravFacC(k)

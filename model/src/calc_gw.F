@@ -37,9 +37,9 @@ C     == Global variables ==
 #include "SURFACE.h"
 #include "DYNVARS.h"
 #include "NH_VARS.h"
-#ifdef ALLOW_ADDFLUID
-# include "FFIELDS.h"
-#endif
+C #ifdef ALLOW_ADDFLUID
+#include "FFIELDS.h"
+C #endif
 #ifdef ALLOW_MOM_COMMON
 # include "MOM_VISC.h"
 #endif
@@ -627,6 +627,7 @@ C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
           ENDDO
         ENDIF
 
+
 C---+----1----+----2----+----3----+----4----+----5----+----6----+----7-|--+----|
 
 #ifdef ALLOW_DIAGNOSTICS
@@ -684,6 +685,30 @@ C--   Dissipation term outside the Adams-Bashforth:
           ENDDO
         ENDIF
 
+        IF ( momTidalForcing .AND. k.GT.1 .AND. deepAtmosphere) THEN
+         DO j=jMin,jMax
+          DO i=iMin,iMax
+            gW(i,j,k,bi,bj) = gW(i,j,k,bi,bj)  
+     &                - phiTide2d(i,j,bi,bj)
+     &                     *(deepFac2C(k) - deepFac2C(km1)) 
+     &                    *recip_drC(k)*rkSign
+
+            IF (j .EQ. 10 .AND. i .EQ. 5) THEN
+              WRITE(*,*) k, km1, XC(i,j,bi,bj), 
+     &                   YC(i,j,bi,bj), etaN(i,j,bi,bj),
+     &                phiTide2d(i,j,bi,bj)*deepFac2C(k),
+     &                phiTide2d(i,j,bi,bj)*deepFac2C(km1),
+     &                    phiTide2d(i,j,bi,bj)
+     &                     *(deepFac2C(k) - deepFac2C(km1)) 
+     &                    *recip_drC(k)*rkSign
+
+            ENDIF    
+          ENDDO
+         ENDDO
+        ENDIF
+
+
+
 C-    end of the k loop
       ENDDO
 
@@ -699,3 +724,4 @@ C-    end of the k loop
 
       RETURN
       END
+
