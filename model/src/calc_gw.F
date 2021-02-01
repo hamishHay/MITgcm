@@ -693,16 +693,16 @@ C--   Dissipation term outside the Adams-Bashforth:
      &                     *(deepFac2C(k) - deepFac2C(km1)) 
      &                    *recip_drC(k)*rkSign
 
-            IF (j .EQ. 10 .AND. i .EQ. 5) THEN
-              WRITE(*,*) k, km1, XC(i,j,bi,bj), 
-     &                   YC(i,j,bi,bj), etaN(i,j,bi,bj),
-     &                phiTide2d(i,j,bi,bj)*deepFac2C(k),
-     &                phiTide2d(i,j,bi,bj)*deepFac2C(km1),
-     &                    phiTide2d(i,j,bi,bj)
-     &                     *(deepFac2C(k) - deepFac2C(km1)) 
-     &                    *recip_drC(k)*rkSign
+C           IF (j .EQ. 10 .AND. i .EQ. 5) THEN
+C             WRITE(*,*) k, km1, XC(i,j,bi,bj), 
+C    &                   YC(i,j,bi,bj), etaN(i,j,bi,bj),
+C    &                phiTide2d(i,j,bi,bj)*deepFac2C(k),
+C    &                phiTide2d(i,j,bi,bj)*deepFac2C(km1),
+C    &                    phiTide2d(i,j,bi,bj)
+C    &                     *(deepFac2C(k) - deepFac2C(km1)) 
+C    &                    *recip_drC(k)*rkSign
 
-            ENDIF    
+C           ENDIF    
           ENDDO
          ENDDO
         ENDIF
